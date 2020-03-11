@@ -7,5 +7,8 @@ export default () => {
   program
     .version(progVersion)
     .description('Compares two configuration files and shows a difference')
+    .option('-f, --format [type]', 'output format')
+    .arguments('<firstConfig> <secondConfig>')
+    .action(() => {})
     .parse(process.argv);
 };
