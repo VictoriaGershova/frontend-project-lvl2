@@ -15,7 +15,7 @@ const getDataDiff = (obj1, obj2) => {
   const ar2 = Object.entries(obj2);
   const deleted = _.differenceWith(ar1, ar2, _.isEqual).map((p) => [...p, '-']);
   const added = _.differenceWith(ar2, ar1, _.isEqual).map((p) => [...p, '+']);
-  const same = _.intersectionWith(ar1, ar2, _.isEqual).map((p) => [...p, '-']);
+  const same = _.intersectionWith(ar1, ar2, _.isEqual).map((p) => [...p, '']);
   const diff = [...deleted, ...added, ...same]
     .sort()
     .map(([k, v, sign]) => `\t${sign} ${k}: ${v}\n`)
