@@ -2,7 +2,6 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import getParser from './parser';
-import pjson from '../package.json';
 
 const getFileData = (pathFile) => {
   const data = fs.readFileSync(pathFile, 'utf-8');
@@ -32,5 +31,4 @@ const genDiff = (pathToFile1, pathToFile2) => {
   return diff;
 };
 
-export const getVersion = () => pjson.version;
 export default genDiff;

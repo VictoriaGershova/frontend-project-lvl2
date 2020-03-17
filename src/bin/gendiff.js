@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import genDiff, { getVersion } from '..';
+import genDiff from '..';
+import pjson from '../../package.json';
 
-const progVersion = getVersion();
+const progVersion = pjson.version;
 const program = new commander.Command();
 program
   .version(progVersion)
