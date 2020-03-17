@@ -5,6 +5,7 @@ import gendiff from '../src';
 const formats = [
   'json',
   'yml',
+  'ini',
 ];
 
 const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', fileName);
