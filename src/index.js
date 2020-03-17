@@ -1,15 +1,16 @@
 import fs from 'fs';
 import _ from 'lodash';
+import path from 'path';
+import getParser from './parser';
 import pjson from '../package.json';
 
-// return JSON file data transformed to object by path
-const getFileData = (pathToFile) => {
-  const fileData = fs.readFileSync(pathToFile);
-  return JSON.parse(fileData);
+const getFileData = (pathFile) => {
+  const data = fs.readFileSync(pathFile, 'utf-8');
+  const parser = getParser(path.extname(pathFile).substring(1));
+  return parser(data);
 };
 
-// generate difference of two objects
-// return string
+// return diference of two objects as a string
 const getDataDiff = (obj1, obj2) => {
   const ar1 = Object.entries(obj1);
   const ar2 = Object.entries(obj2);
@@ -22,7 +23,6 @@ const getDataDiff = (obj1, obj2) => {
     .join('');
   return `{\n${diff}}`;
 };
-
 
 const genDiff = (pathToFile1, pathToFile2) => {
   const diff = getDataDiff(
