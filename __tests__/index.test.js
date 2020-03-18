@@ -29,3 +29,10 @@ test.each(formats)('%s', async (format) => {
   const actual = await gendiff(filePath1, filePath2);
   expect(actual).toEqual(expected);
 });
+
+test('tree', async () => {
+  const filePath1 = getFixturePath('firsttree.json');
+  const filePath2 = getFixturePath('secondtree.json');
+  const actual = await gendiff(filePath1, filePath2);
+  expect(actual).toEqual(expected);
+});
