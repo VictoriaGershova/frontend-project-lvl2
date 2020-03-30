@@ -26,25 +26,22 @@ export default (diff) => {
         (acc, property) => {
           const { value, children, operation } = diffItems[property];
           const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
+          let newLines = [];
           const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
           if (operation === 'insert') {
-            return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
+            newLines = [lineTemplate(`added with value: ${stringifyValue(value)}`)];
           }
           if (operation === 'delete') {
-            return [...acc, lineTemplate('deleted')];
-          }
-          if (operation === 'unchanged') {
-            return acc;
+            newLines = [lineTemplate('deleted')];
           }
           if (Object.keys(children).length > 0) {
-            return [...acc, ...serializeDiffItems(children, propertyName)];
-          }
-          return [
-            ...acc,
-            lineTemplate(
+            newLines = serializeDiffItems(children, propertyName);
+          } else if (operation === 'update') {
+            newLines = [lineTemplate(
               `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-            ),
-          ];
+            )];
+          }
+          return [...acc, ...newLines];
         },
         [],
       );
