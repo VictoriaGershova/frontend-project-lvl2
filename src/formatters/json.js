@@ -1,21 +1,3 @@
-const tabLength = 4;
-
-const stringifyValue = (value) => {
-  const stringifyObject = (obj, depth = 0) => {
-    const lines = Object.keys(obj)
-      .map((key) => {
-        const v = obj[key];
-        const strV = v instanceof Object ? stringifyObject(v, depth + 1) : v;
-        return `${' '.repeat(tabLength * (depth + 1))}${key}: ${strV}`;
-      });
-    return ['{', ...lines, `${' '.repeat(tabLength * depth)}}`].join('\n');
-  };
-  if (value instanceof Object) {
-    return stringifyObject(value);
-  }
-  return `${value}`;
-};
-
 export default (diff) => {
   const serializeDiffItems = (diffItems) => {
     const properties = Object.keys(diffItems);
