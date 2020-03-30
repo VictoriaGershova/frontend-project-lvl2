@@ -29,7 +29,7 @@ const getOperation = (oldValue, newValue) => {
   [property]:
     { value: value | { oldValue, newValue },
       children: { diff for children } | {},
-      operation: 'i'/'u'/'d'/'n',
+      operation: 'input'/'update'/'delete'/'unchanged',
     }
 */
 const genDiff = (config1, config2) => {
@@ -49,14 +49,7 @@ const genDiff = (config1, config2) => {
       const children = (
         oldValue instanceof Object && newValue instanceof Object ? genDiff(oldValue, newValue) : {}
       );
-      return {
-        ...acc,
-        [property]: {
-          value,
-          children,
-          operation,
-        },
-      };
+      return { ...acc, [property]: { value, children, operation } };
     },
     {},
   );

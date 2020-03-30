@@ -33,11 +33,7 @@ export default (diff) => {
       .reduce(
         (acc, property) => {
           let newLines;
-          const {
-            value,
-            children,
-            operation,
-          } = diffItems[property];
+          const { value, children, operation } = diffItems[property];
           const linesTemplate = (operationSign, contentLines, hasChildren) => ([
             `${`${operationSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
             ...(hasChildren
@@ -63,10 +59,7 @@ export default (diff) => {
               ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), false),
             ];
           }
-          return [
-            ...acc,
-            ...newLines,
-          ];
+          return [...acc, ...newLines];
         },
         [],
       );

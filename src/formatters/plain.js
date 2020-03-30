@@ -24,11 +24,7 @@ export default (diff) => {
       })
       .reduce(
         (acc, property) => {
-          const {
-            value,
-            children,
-            operation,
-          } = diffItems[property];
+          const { value, children, operation } = diffItems[property];
           const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
           const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
           if (operation === 'insert') {
