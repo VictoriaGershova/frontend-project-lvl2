@@ -9,42 +9,32 @@ const stringifyValue = (value) => {
   }
 };
 
-export default (diff) => {
+export default (diff, sortProp) => {
   const serializeDiffItems = (diffItems, parentProperty = '') => {
-    const properties = Object.keys(diffItems);
-    const lines = properties
-      .sort((propertyA, propertyB) => {
-        if (propertyA < propertyB) {
-          return -1;
+    const properties = sortProp(Object.keys(diffItems));
+    const lines = properties.reduce(
+      (acc, property) => {
+        const { value, children, operation } = diffItems[property];
+        const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
+        let newLines = [];
+        const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
+        if (operation === 'insert') {
+          newLines = [lineTemplate(`added with value: ${stringifyValue(value)}`)];
         }
-        if (propertyA > propertyB) {
-          return 1;
+        if (operation === 'delete') {
+          newLines = [lineTemplate('deleted')];
         }
-        return 0;
-      })
-      .reduce(
-        (acc, property) => {
-          const { value, children, operation } = diffItems[property];
-          const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
-          let newLines = [];
-          const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-          if (operation === 'insert') {
-            newLines = [lineTemplate(`added with value: ${stringifyValue(value)}`)];
-          }
-          if (operation === 'delete') {
-            newLines = [lineTemplate('deleted')];
-          }
-          if (Object.keys(children).length > 0) {
-            newLines = serializeDiffItems(children, propertyName);
-          } else if (operation === 'update') {
-            newLines = [lineTemplate(
-              `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-            )];
-          }
-          return [...acc, ...newLines];
-        },
-        [],
-      );
+        if (Object.keys(children).length > 0) {
+          newLines = serializeDiffItems(children, propertyName);
+        } else if (operation === 'update') {
+          newLines = [lineTemplate(
+            `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
+          )];
+        }
+        return [...acc, ...newLines];
+      },
+      [],
+    );
     return lines;
   };
   const lines = serializeDiffItems(diff);

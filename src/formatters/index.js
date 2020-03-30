@@ -2,13 +2,22 @@ import defaultFormater from './default';
 import jsonFormater from './json';
 import plainFormater from './plain';
 
-export default (diff, format) => {
-  switch (format) {
-    case 'plain':
-      return plainFormater(diff);
-    case 'json':
-      return jsonFormater(diff);
-    default:
-      return defaultFormater(diff);
-  }
+const sortProp = (properties) => properties.sort(
+  (propertyA, propertyB) => {
+    if (propertyA < propertyB) {
+      return -1;
+    }
+    if (propertyA > propertyB) {
+      return 1;
+    }
+    return 0;
+  },
+);
+
+const formatters = {
+  default: defaultFormater,
+  plain: plainFormater,
+  json: jsonFormater,
 };
+
+export default (diff, format = 'default') => formatters[format](diff, sortProp);
