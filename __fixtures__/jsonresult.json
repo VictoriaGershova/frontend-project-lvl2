@@ -1,0 +1,79 @@
+{
+  "common": {
+    "follow": {
+      "operation": "insert",
+      "value": false
+    },
+    "setting1": {
+      "operation": "unchanged",
+      "value": "Value 1"
+    },
+    "setting2": {
+      "operation": "delete",
+      "value": 200
+    },
+    "setting3": {
+      "operation": "update",
+      "value": {
+        "oldValue": true,
+        "newValue": {
+          "key": "value"
+        }
+      }
+    },
+    "setting4": {
+      "operation": "insert",
+      "value": "blah blah"
+    },
+    "setting5": {
+      "operation": "insert",
+      "value": {
+        "key5": "value5"
+      }
+    },
+    "setting6": {
+      "key": {
+        "operation": "unchanged",
+        "value": "value"
+      },
+      "ops": {
+        "operation": "insert",
+        "value": "vops"
+      }
+    }
+  },
+  "group1": {
+    "baz": {
+      "operation": "update",
+      "value": {
+        "oldValue": "bas",
+        "newValue": "bars"
+      }
+    },
+    "foo": {
+      "operation": "unchanged",
+      "value": "bar"
+    },
+    "nest": {
+      "operation": "update",
+      "value": {
+        "oldValue": {
+          "key": "value"
+        },
+        "newValue": "str"
+      }
+    }
+  },
+  "group2": {
+    "operation": "delete",
+    "value": {
+      "abc": 12345
+    }
+  },
+  "group3": {
+    "operation": "insert",
+    "value": {
+      "fee": 100500
+    }
+  }
+}

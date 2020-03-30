@@ -2,11 +2,17 @@ import path from 'path';
 import fs from 'fs';
 import gendiff from '../src';
 
-const formats = [
+const inFormats = [
   'json',
   'yml',
   'ini',
 ];
+
+const outFormats = {
+  default: 'defaultresult.txt',
+  plain: 'plainresult.txt',
+  json: 'jsonresult.json',
+};
 
 const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', fileName);
 
@@ -17,18 +23,19 @@ test('exceptions', () => {
   expect(() => gendiff('../src', correct)).toThrow();
 });
 
-test.each(formats)('%s', async (format) => {
-  const filePath1 = getFixturePath(`first.${format}`);
-  const filePath2 = getFixturePath(`second.${format}`);
-  const actual = await gendiff(filePath1, filePath2);
-  const expected = await fs.readFileSync(getFixturePath('result.txt'), 'utf-8').trim();
+test('empty file', async () => {
+  const pathFile = getFixturePath('empty.yml');
+  const actual = await gendiff(pathFile, pathFile);
+  const expected = '{\n}';
   expect(actual).toEqual(expected);
 });
 
-test('tree', async () => {
-  const filePath1 = getFixturePath('firsttree.json');
-  const filePath2 = getFixturePath('secondtree.json');
-  const actual = await gendiff(filePath1, filePath2);
-  const expected = await fs.readFileSync(getFixturePath('treeResult.txt'), 'utf-8').trim();
-  expect(actual).toEqual(expected);
+describe.each(inFormats)('%s', (inFormat) => {
+  test.each(Object.keys(outFormats))('%s', async (outFormat) => {
+    const pathBefore = getFixturePath(`before.${inFormat}`);
+    const pathAfter = getFixturePath(`after.${inFormat}`);
+    const actual = await gendiff(pathBefore, pathAfter, outFormat);
+    const expected = await fs.readFileSync(getFixturePath(outFormats[outFormat]), 'utf-8').trim();
+    expect(actual).toEqual(expected);
+  });
 });
