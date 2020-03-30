@@ -12,7 +12,7 @@ const operations = {
 };
 
 // compare two values and return operation done on them
-const getOperation = (oldValue, newValue) => {
+const getDiffOperation = (oldValue, newValue) => {
   if (typeof oldValue === 'undefined') {
     return operations.insert;
   }
@@ -23,6 +23,16 @@ const getOperation = (oldValue, newValue) => {
     return operations.update;
   }
   return operations.unchanged;
+};
+
+const getDiffValue = (operation, oldValue, newValue) => {
+  if (operation === operations.delete || operation === operations.unchanged) {
+    return oldValue;
+  }
+  if (operation === operations.insert) {
+    return newValue;
+  }
+  return { oldValue, newValue };
 };
 
 /* return configuration changes (diff) as an object with properties (keys):
@@ -37,15 +47,8 @@ const genDiff = (config1, config2) => {
   const diff = properties.reduce(
     (acc, property) => {
       const [oldValue, newValue] = [config1[property], config2[property]];
-      const operation = getOperation(oldValue, newValue);
-      let value;
-      if (operation === operations.delete || operation === operations.unchanged) {
-        value = oldValue;
-      } else if (operation === operations.insert) {
-        value = newValue;
-      } else {
-        value = { oldValue, newValue };
-      }
+      const operation = getDiffOperation(oldValue, newValue);
+      const value = getDiffValue(operation, oldValue, newValue);
       const children = (
         oldValue instanceof Object && newValue instanceof Object ? genDiff(oldValue, newValue) : {}
       );
