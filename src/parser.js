@@ -10,13 +10,13 @@ const parserFunctions = {
     const parsedData = ini.parse(data);
     const iter = (items) => Object.entries(items).reduce(
       (acc, [key, value]) => {
+        let newValue = value;
         if (value instanceof Object) {
-          return { ...acc, [key]: iter(value) };
+          newValue = iter(value);
+        } else if (isNumber(value)) {
+          newValue = Number(value);
         }
-        if (isNumber(value)) {
-          return { ...acc, [key]: Number(value) };
-        }
-        return { ...acc, [key]: value };
+        return { ...acc, [key]: newValue };
       },
       {},
     );
