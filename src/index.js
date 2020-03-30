@@ -59,7 +59,7 @@ const genDiff = (config1, config2) => {
   return diff;
 };
 
-export default (pathFile1, pathFile2, format = 'default') => {
+export default (pathFile1, pathFile2, format) => {
   const [data1, data2] = [pathFile1, pathFile2].map(
     (pathFile) => {
       const response = fs.readFileSync(pathFile, 'utf-8');
