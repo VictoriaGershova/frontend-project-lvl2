@@ -17,7 +17,7 @@ const outFormats = {
 const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', fileName);
 
 test('exceptions', () => {
-  const correct = getFixturePath('second.json');
+  const correct = getFixturePath('after.json');
   expect(() => gendiff()).toThrow();
   expect(() => gendiff('../nonexistent.json', correct)).toThrow();
   expect(() => gendiff('../src', correct)).toThrow();
