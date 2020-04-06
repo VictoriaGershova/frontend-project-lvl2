@@ -63,8 +63,8 @@ export default (pathFile1, pathFile2, format) => {
   const [data1, data2] = [pathFile1, pathFile2].map(
     (pathFile) => {
       const response = fs.readFileSync(pathFile, 'utf-8');
-      const parser = getParser(path.extname(pathFile).substring(1));
-      const data = response === '' ? {} : parser(response);
+      const parse = getParser(path.extname(pathFile).substring(1));
+      const data = parse(response);
       return data;
     },
   );

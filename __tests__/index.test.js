@@ -9,7 +9,7 @@ const inFormats = [
 ];
 
 const outFormats = {
-  default: 'defaultresult.txt',
+  list: 'listresult.txt',
   plain: 'plainresult.txt',
   json: 'jsonresult.json',
 };
@@ -19,15 +19,14 @@ const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', 
 test('exceptions', () => {
   const correct = getFixturePath('after.json');
   expect(() => gendiff()).toThrow();
-  expect(() => gendiff('../nonexistent.json', correct)).toThrow();
-  expect(() => gendiff('../src', correct)).toThrow();
+  expect(() => gendiff('../nonexistent.json', correct, outFormats.list)).toThrow();
+  expect(() => gendiff('../src', correct, outFormats.list)).toThrow();
+  expect(() => gendiff(correct, correct)).toThrow();
 });
 
-test('empty file', async () => {
+test('empty file exception', async () => {
   const pathFile = getFixturePath('empty.yml');
-  const actual = await gendiff(pathFile, pathFile);
-  const expected = '{\n}';
-  expect(actual).toEqual(expected);
+  expect(() => gendiff(pathFile, pathFile, outFormats.list)).toThrow();
 });
 
 describe.each(inFormats)('%s', (inFormat) => {
