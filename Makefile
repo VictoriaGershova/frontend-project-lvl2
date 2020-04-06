@@ -1,5 +1,11 @@
 install:
-	npm install
+	install-deps
+
+install-deps:
+	npm ci
+
+build:
+	npm run build --if-present
 
 start:
 	npx babel-node src/bin/gendiff.js
