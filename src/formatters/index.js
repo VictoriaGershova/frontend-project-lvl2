@@ -1,4 +1,4 @@
-import defaultFormater from './default';
+import listFormater from './list';
 import jsonFormater from './json';
 import plainFormater from './plain';
 
@@ -15,9 +15,9 @@ const sortProp = (properties) => properties.sort(
 );
 
 const formatters = {
-  default: defaultFormater,
+  list: listFormater,
   plain: plainFormater,
   json: jsonFormater,
 };
 
-export default (diff, format = 'default') => formatters[format](diff, sortProp);
+export default (diff, format) => formatters[format](diff, sortProp);
