@@ -2,7 +2,7 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import getParser from './parser';
-import serialize from './formatters';
+import render from './formatters';
 
 const operations = {
   insert: 'insert',
@@ -60,15 +60,15 @@ const genDiff = (config1, config2) => {
 };
 
 export default (pathFile1, pathFile2, format) => {
-  const [data1, data2] = [pathFile1, pathFile2].map(
-    (pathFile) => {
-      const response = fs.readFileSync(pathFile, 'utf-8');
-      const parse = getParser(path.extname(pathFile).substring(1));
-      const data = parse(response);
-      return data;
-    },
-  );
+  const getFileData = (pathFile) => {
+    const fileContent = fs.readFileSync(pathFile, 'utf-8');
+    const parse = getParser(path.extname(pathFile).substring(1));
+    const data = parse(fileContent);
+    return data;
+  };
+  const data1 = getFileData(pathFile1);
+  const data2 = getFileData(pathFile2);
   const diff = genDiff(data1, data2);
-  const result = serialize(diff, format);
+  const result = render(diff, format);
   return result;
 };
