@@ -4,71 +4,58 @@ import path from 'path';
 import getParser from './parser';
 import render from './formatters';
 
-const operations = {
-  insert: 'insert',
-  update: 'update',
-  delete: 'delete',
-  unchanged: 'unchanged',
-};
-
-// compare two values and return operation done on them
-const getDiffOperation = (oldValue, newValue) => {
-  if (typeof oldValue === 'undefined') {
-    return operations.insert;
-  }
-  if (typeof newValue === 'undefined') {
-    return operations.delete;
-  }
-  if (!_.isEqual(oldValue, newValue)) {
-    return operations.update;
-  }
-  return operations.unchanged;
-};
-
-const getDiffValue = (operation, oldValue, newValue) => {
-  if (operation === operations.delete || operation === operations.unchanged) {
-    return oldValue;
-  }
-  if (operation === operations.insert) {
-    return newValue;
-  }
-  return { oldValue, newValue };
-};
-
 /* return configuration changes (diff) as an object with properties (keys):
   [property]:
     { value: value | { oldValue, newValue },
       children: { diff for children } | {},
-      operation: 'input'/'update'/'delete'/'unchanged',
+      operation: 'insert'/'update'/'delete'/'unchanged',
     }
 */
-const genDiff = (config1, config2) => {
-  const properties = _.uniq(Object.keys(config1).concat(Object.keys(config2)));
+const genDiff = (beforeConfig, afterConfig) => {
+  const build = (oldValue, newValue) => {
+    const operations = {
+      insert: 'insert',
+      update: 'update',
+      delete: 'delete',
+      unchanged: 'unchanged',
+    };
+    if (typeof oldValue === 'undefined') {
+      return { value: newValue, children: {}, operation: operations.insert };
+    }
+    if (typeof newValue === 'undefined') {
+      return { value: oldValue, children: {}, operation: operations.delete };
+    }
+    if (_.isEqual(oldValue, newValue)) {
+      return { value: oldValue, children: {}, operation: operations.unchanged };
+    }
+    const hasChildren = oldValue instanceof Object && newValue instanceof Object;
+    return {
+      value: { oldValue, newValue },
+      children: hasChildren ? genDiff(oldValue, newValue) : {},
+      operation: operations.update,
+    };
+  };
+  const properties = _.union(_.keys(beforeConfig), _.keys(afterConfig));
   const diff = properties.reduce(
     (acc, property) => {
-      const [oldValue, newValue] = [config1[property], config2[property]];
-      const operation = getDiffOperation(oldValue, newValue);
-      const value = getDiffValue(operation, oldValue, newValue);
-      const children = (
-        oldValue instanceof Object && newValue instanceof Object ? genDiff(oldValue, newValue) : {}
-      );
-      return { ...acc, [property]: { value, children, operation } };
+      const [oldValue, newValue] = [beforeConfig[property], afterConfig[property]];
+      return { ...acc, [property]: build(oldValue, newValue) };
     },
     {},
   );
   return diff;
 };
 
-export default (pathFile1, pathFile2, format) => {
-  const getFileData = (pathFile) => {
+export default (beforePathFile, afterPathFile, format) => {
+  const getConfig = (pathFile) => {
     const fileContent = fs.readFileSync(pathFile, 'utf-8');
     const parse = getParser(path.extname(pathFile).substring(1));
-    const data = parse(fileContent);
-    return data;
+    const config = parse(fileContent);
+    return config;
   };
-  const data1 = getFileData(pathFile1);
-  const data2 = getFileData(pathFile2);
-  const diff = genDiff(data1, data2);
-  const result = render(diff, format);
-  return result;
+  const beforeConfig = getConfig(beforePathFile);
+  const afterConfig = getConfig(afterPathFile);
+  const diffConfig = genDiff(beforeConfig, afterConfig);
+  const formatted = render(diffConfig, format);
+  return formatted;
 };
