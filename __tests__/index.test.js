@@ -19,14 +19,9 @@ const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', 
 test('exceptions', () => {
   const correct = getFixturePath('after.json');
   expect(() => gendiff()).toThrow();
-  expect(() => gendiff('../nonexistent.json', correct, outFormats.list)).toThrow();
-  expect(() => gendiff('../src', correct, outFormats.list)).toThrow();
+  expect(() => gendiff('../nonexistent.json', correct, 'list')).toThrow();
+  expect(() => gendiff('../src', correct, 'list')).toThrow();
   expect(() => gendiff(correct, correct)).toThrow();
-});
-
-test('empty file exception', async () => {
-  const pathFile = getFixturePath('empty.yml');
-  expect(() => gendiff(pathFile, pathFile, outFormats.list)).toThrow();
 });
 
 describe.each(inFormats)('%s', (inFormat) => {

@@ -1,19 +1,19 @@
 {
   "common": {
     "follow": {
-      "operation": "insert",
+      "state": "added",
       "value": false
     },
     "setting1": {
-      "operation": "unchanged",
+      "state": "unchanged",
       "value": "Value 1"
     },
     "setting2": {
-      "operation": "delete",
+      "state": "deleted",
       "value": 200
     },
     "setting3": {
-      "operation": "update",
+      "state": "changed",
       "value": {
         "oldValue": true,
         "newValue": {
@@ -22,40 +22,40 @@
       }
     },
     "setting4": {
-      "operation": "insert",
+      "state": "added",
       "value": "blah blah"
     },
     "setting5": {
-      "operation": "insert",
+      "state": "added",
       "value": {
         "key5": "value5"
       }
     },
     "setting6": {
       "key": {
-        "operation": "unchanged",
+        "state": "unchanged",
         "value": "value"
       },
       "ops": {
-        "operation": "insert",
+        "state": "added",
         "value": "vops"
       }
     }
   },
   "group1": {
     "baz": {
-      "operation": "update",
+      "state": "changed",
       "value": {
         "oldValue": "bas",
         "newValue": "bars"
       }
     },
     "foo": {
-      "operation": "unchanged",
+      "state": "unchanged",
       "value": "bar"
     },
     "nest": {
-      "operation": "update",
+      "state": "changed",
       "value": {
         "oldValue": {
           "key": "value"
@@ -65,13 +65,13 @@
     }
   },
   "group2": {
-    "operation": "delete",
+    "state": "deleted",
     "value": {
       "abc": 12345
     }
   },
   "group3": {
-    "operation": "insert",
+    "state": "added",
     "value": {
       "fee": 100500
     }

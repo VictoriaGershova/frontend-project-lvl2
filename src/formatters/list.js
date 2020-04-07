@@ -17,44 +17,47 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortProp) => {
-  const serializeDiffItems = (diffItems, depth = 0) => {
+  const formatDiffItems = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
-    const properties = sortProp(Object.keys(diffItems));
-    const lines = properties.reduce(
-      (acc, property) => {
-        let newLines;
-        const { value, children, operation } = diffItems[property];
-        const linesTemplate = (operationSign, contentLines, hasChildren) => ([
-          `${`${operationSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
-          ...(hasChildren
+    const sorted = sortProp(diffItems);
+    const lines = sorted.reduce(
+      (acc, diffItem) => {
+        const {
+          property,
+          value,
+          subproperties,
+          state,
+        } = diffItem;
+        const linesTemplate = (stateSign, contentLines, hasSubproperties) => ([
+          `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
+          ...(hasSubproperties
             ? contentLines.filter((line, index) => index !== 0)
             : contentLines
               .filter((line, index) => index !== 0)
               .map((line) => `${' '.repeat(margeWidth)}${line}`)),
         ]);
-        if (operation === 'insert') {
-          newLines = linesTemplate('+', stringifyValue(value).split('\n'), false);
+        if (state === 'added') {
+          return [...acc, ...linesTemplate('+', stringifyValue(value).split('\n'), false)];
         }
-        if (operation === 'delete') {
-          newLines = linesTemplate('-', stringifyValue(value).split('\n'), false);
+        if (state === 'deleted') {
+          return [...acc, ...linesTemplate('-', stringifyValue(value).split('\n'), false)];
         }
-        if (operation === 'unchanged') {
-          newLines = linesTemplate(' ', stringifyValue(value).split('\n'), false);
+        if (state === 'unchanged') {
+          return [...acc, ...linesTemplate(' ', stringifyValue(value).split('\n'), false)];
         }
-        if (Object.keys(children).length > 0) {
-          newLines = linesTemplate(' ', serializeDiffItems(children, depth + 1), true);
-        } else if (operation === 'update') {
-          newLines = [
-            ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), false),
-            ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), false),
-          ];
+        if (subproperties.length > 0) {
+          return [...acc, ...linesTemplate(' ', formatDiffItems(subproperties, depth + 1), true)];
         }
-        return [...acc, ...newLines];
+        return [
+          ...acc,
+          ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), false),
+          ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), false),
+        ];
       },
       [],
     );
     return ['{', ...lines, `${' '.repeat(tabLength * depth)}}`];
   };
-  const lines = serializeDiffItems(diff);
+  const lines = formatDiffItems(diff);
   return lines.join('\n');
 };

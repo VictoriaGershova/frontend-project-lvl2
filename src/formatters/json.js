@@ -1,17 +1,18 @@
 export default (diff, sortProp) => {
   const serializeDiffItems = (diffItems) => {
-    const properties = sortProp(Object.keys(diffItems));
-    const lines = properties.reduce(
-      (acc, property) => {
+    const sorted = sortProp(diffItems);
+    const lines = sorted.reduce(
+      (acc, diffItem) => {
         const {
+          property,
           value,
-          children,
-          operation,
-        } = diffItems[property];
-        if (Object.keys(children).length > 0) {
-          return { ...acc, [property]: serializeDiffItems(children) };
+          subproperties,
+          state,
+        } = diffItem;
+        if (subproperties.length > 0) {
+          return { ...acc, [property]: serializeDiffItems(subproperties) };
         }
-        return { ...acc, [property]: { operation, value } };
+        return { ...acc, [property]: { state, value } };
       },
       {},
     );

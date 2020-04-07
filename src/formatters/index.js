@@ -3,7 +3,7 @@ import jsonFormater from './json';
 import plainFormater from './plain';
 
 const sortProp = (properties) => properties.sort(
-  (propertyA, propertyB) => {
+  ({ property: propertyA }, { property: propertyB }) => {
     if (propertyA < propertyB) {
       return -1;
     }

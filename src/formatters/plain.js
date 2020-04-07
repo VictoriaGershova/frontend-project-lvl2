@@ -10,33 +10,38 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortProp) => {
-  const serializeDiffItems = (diffItems, parentProperty = '') => {
-    const properties = sortProp(Object.keys(diffItems));
-    const lines = properties.reduce(
-      (acc, property) => {
-        const { value, children, operation } = diffItems[property];
+  const formatDiffItems = (diffItems, parentProperty = '') => {
+    const sorted = sortProp(diffItems);
+    const lines = sorted.reduce(
+      (acc, diffItem) => {
+        const {
+          property,
+          value,
+          subproperties,
+          state,
+        } = diffItem;
         const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
-        let newLines = [];
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-        if (operation === 'insert') {
-          newLines = [lineTemplate(`added with value: ${stringifyValue(value)}`)];
+        if (state === 'unchanged') {
+          return acc;
         }
-        if (operation === 'delete') {
-          newLines = [lineTemplate('deleted')];
+        if (state === 'added') {
+          return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
         }
-        if (Object.keys(children).length > 0) {
-          newLines = serializeDiffItems(children, propertyName);
-        } else if (operation === 'update') {
-          newLines = [lineTemplate(
-            `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-          )];
+        if (state === 'deleted') {
+          return [...acc, lineTemplate('deleted')];
         }
-        return [...acc, ...newLines];
+        if (subproperties.length > 0) {
+          return [...acc, ...formatDiffItems(subproperties, propertyName)];
+        }
+        return [...acc, lineTemplate(
+          `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
+        )];
       },
       [],
     );
     return lines;
   };
-  const lines = serializeDiffItems(diff);
+  const lines = formatDiffItems(diff);
   return lines.join('\n');
 };
