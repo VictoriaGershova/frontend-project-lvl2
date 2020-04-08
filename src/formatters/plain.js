@@ -1,3 +1,13 @@
+import {
+  getName,
+  getValue,
+  isAdded,
+  isChanged,
+  isDeleted,
+  hasSubproperties,
+  getSubproperties,
+} from '../propertydiff';
+
 const stringifyValue = (value) => {
   switch (typeof value) {
     case 'object':
@@ -9,39 +19,35 @@ const stringifyValue = (value) => {
   }
 };
 
-export default (diff, sortProp) => {
-  const formatDiffItems = (diffItems, parentProperty = '') => {
-    const sorted = sortProp(diffItems);
+export default (diff, sortDiff) => {
+  const formatDiff = (diffItems, parentProperty = '') => {
+    const sorted = sortDiff(diffItems);
     const lines = sorted.reduce(
-      (acc, diffItem) => {
-        const {
-          property,
-          value,
-          subproperties,
-          state,
-        } = diffItem;
+      (acc, propDiff) => {
+        const property = getName(propDiff);
+        const value = getValue(propDiff);
         const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-        if (state === 'unchanged') {
-          return acc;
-        }
-        if (state === 'added') {
+        if (isAdded(propDiff)) {
           return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
         }
-        if (state === 'deleted') {
+        if (isDeleted(propDiff)) {
           return [...acc, lineTemplate('deleted')];
         }
-        if (subproperties.length > 0) {
-          return [...acc, ...formatDiffItems(subproperties, propertyName)];
+        if (hasSubproperties(propDiff)) {
+          return [...acc, ...formatDiff(getSubproperties(propDiff), propertyName)];
         }
-        return [...acc, lineTemplate(
-          `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-        )];
+        if (isChanged(propDiff)) {
+          return [...acc, lineTemplate(
+            `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
+          )];
+        }
+        return acc;
       },
       [],
     );
     return lines;
   };
-  const lines = formatDiffItems(diff);
+  const lines = formatDiff(diff);
   return lines.join('\n');
 };

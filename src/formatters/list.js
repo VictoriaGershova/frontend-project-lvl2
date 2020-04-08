@@ -1,3 +1,14 @@
+import {
+  getName,
+  getValue,
+  isAdded,
+  isChanged,
+  isDeleted,
+  hasSubproperties,
+  getSubproperties,
+} from '../propertydiff';
+
+
 const tabLength = 4;
 
 const stringifyValue = (value) => {
@@ -16,48 +27,42 @@ const stringifyValue = (value) => {
   return `${value}`;
 };
 
-export default (diff, sortProp) => {
-  const formatDiffItems = (diffItems, depth = 0) => {
+export default (diff, sortDiff) => {
+  const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
-    const sorted = sortProp(diffItems);
+    const sorted = sortDiff(diffItems);
     const lines = sorted.reduce(
-      (acc, diffItem) => {
-        const {
-          property,
-          value,
-          subproperties,
-          state,
-        } = diffItem;
-        const linesTemplate = (stateSign, contentLines, hasSubproperties) => ([
+      (acc, propDiff) => {
+        const property = getName(propDiff);
+        const value = getValue(propDiff);
+        const linesTemplate = (stateSign, contentLines, marge) => ([
           `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
-          ...(hasSubproperties
-            ? contentLines.filter((line, index) => index !== 0)
-            : contentLines
-              .filter((line, index) => index !== 0)
-              .map((line) => `${' '.repeat(margeWidth)}${line}`)),
+          ...contentLines
+            .filter((line, index) => index !== 0)
+            .map((line) => `${' '.repeat(marge)}${line}`),
         ]);
-        if (state === 'added') {
-          return [...acc, ...linesTemplate('+', stringifyValue(value).split('\n'), false)];
+        if (isAdded(propDiff)) {
+          return [...acc, ...linesTemplate('+', stringifyValue(value).split('\n'), margeWidth)];
         }
-        if (state === 'deleted') {
-          return [...acc, ...linesTemplate('-', stringifyValue(value).split('\n'), false)];
+        if (isDeleted(propDiff)) {
+          return [...acc, ...linesTemplate('-', stringifyValue(value).split('\n'), margeWidth)];
         }
-        if (state === 'unchanged') {
-          return [...acc, ...linesTemplate(' ', stringifyValue(value).split('\n'), false)];
+        if (hasSubproperties(propDiff)) {
+          return [...acc, ...linesTemplate(' ', formatDiff(getSubproperties(propDiff), depth + 1), 0)];
         }
-        if (subproperties.length > 0) {
-          return [...acc, ...linesTemplate(' ', formatDiffItems(subproperties, depth + 1), true)];
+        if (isChanged(propDiff)) {
+          return [
+            ...acc,
+            ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), margeWidth),
+            ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), margeWidth),
+          ];
         }
-        return [
-          ...acc,
-          ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), false),
-          ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), false),
-        ];
+        return [...acc, ...linesTemplate(' ', stringifyValue(value).split('\n'), margeWidth)];
       },
       [],
     );
     return ['{', ...lines, `${' '.repeat(tabLength * depth)}}`];
   };
-  const lines = formatDiffItems(diff);
+  const lines = formatDiff(diff);
   return lines.join('\n');
 };

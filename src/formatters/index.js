@@ -1,9 +1,12 @@
 import listFormater from './list';
 import jsonFormater from './json';
 import plainFormater from './plain';
+import { getName } from '../propertydiff';
 
-const sortProp = (properties) => properties.sort(
-  ({ property: propertyA }, { property: propertyB }) => {
+const sortDiff = (diff) => diff.sort(
+  (propDiffA, propDiffB) => {
+    const propertyA = getName(propDiffA);
+    const propertyB = getName(propDiffB);
     if (propertyA < propertyB) {
       return -1;
     }
@@ -20,4 +23,4 @@ const formatters = {
   json: jsonFormater,
 };
 
-export default (diff, format) => formatters[format](diff, sortProp);
+export default (diff, format) => formatters[format](diff, sortDiff);

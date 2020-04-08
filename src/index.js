@@ -3,62 +3,25 @@ import _ from 'lodash';
 import path from 'path';
 import getParser from './parser';
 import render from './formatters';
+import build, { addSubproperties, isChanged } from './propertydiff';
 
-/* return configuration changes tree (diff) as an array of objects:
-  {
-    property,
-    value: value | { oldValue, newValue },
-    subproperties: [diff for subproperties] | [],
-    state: 'added'/'changed'/'deleted'/'unchanged',
-  }
+/*
+  diff as a tree:
+  [
+    function | [function, [genDiff for subproperties]]
+  ]
 */
 const genDiff = (beforeConfig, afterConfig) => {
-  const build = (property, oldValue, newValue) => {
-    const states = {
-      added: 'added',
-      changed: 'changed',
-      deleted: 'deleted',
-      unchanged: 'unchanged',
-    };
-    if (typeof oldValue === 'undefined') {
-      return {
-        property,
-        value: newValue,
-        subproperties: [],
-        state: states.added,
-      };
-    }
-    if (typeof newValue === 'undefined') {
-      return {
-        property,
-        value: oldValue,
-        subproperties: [],
-        state: states.deleted,
-      };
-    }
-    if (_.isEqual(oldValue, newValue)) {
-      return {
-        property,
-        value: oldValue,
-        subproperties: [],
-        state: states.unchanged,
-      };
-    }
-    const hasSubproperties = oldValue instanceof Object && newValue instanceof Object;
-    return {
-      property,
-      value: { oldValue, newValue },
-      subproperties: hasSubproperties ? genDiff(oldValue, newValue) : [],
-      state: states.changed,
-    };
-  };
   const properties = _.union(_.keys(beforeConfig), _.keys(afterConfig));
-  const diff = properties.reduce(
-    (acc, property) => {
+  const diff = properties.map(
+    (property) => {
       const [oldValue, newValue] = [beforeConfig[property], afterConfig[property]];
-      return [...acc, build(property, oldValue, newValue)];
+      const propDiff = build(property, oldValue, newValue);
+      if (isChanged(propDiff) && oldValue instanceof Object && newValue instanceof Object) {
+        return addSubproperties(propDiff, genDiff(oldValue, newValue));
+      }
+      return propDiff;
     },
-    [],
   );
   return diff;
 };
