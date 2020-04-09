@@ -16,12 +16,26 @@ const outFormats = {
 
 const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', fileName);
 
-test('exceptions', () => {
-  const correct = getFixturePath('after.json');
-  expect(() => gendiff()).toThrow();
-  expect(() => gendiff('../nonexistent.json', correct, 'list')).toThrow();
-  expect(() => gendiff('../src', correct, 'list')).toThrow();
-  expect(() => gendiff(correct, correct)).toThrow();
+describe('exceptions', () => {
+  test('invalid JSON file', () => {
+    const correctFile = getFixturePath('after.json');
+    const notValidFile = getFixturePath('invalid.json');
+    expect(() => gendiff(notValidFile, correctFile, 'list')).toThrow();
+  });
+  test('empty arguments', () => {
+    expect(() => gendiff()).toThrow();
+  });
+  test('invalid file name', () => {
+    const correctFile = getFixturePath('after.json');
+    expect(() => gendiff('../nonexistent.json', correctFile, 'list')).toThrow();
+    expect(() => gendiff('../src', correctFile, 'list')).toThrow();
+  });
+  test('invalid output format name', () => {
+    const pathBefore = getFixturePath('before.json');
+    const pathAfter = getFixturePath('after.json');
+    expect(() => gendiff(pathBefore, pathAfter, '')).toThrow();
+    expect(() => gendiff(pathBefore, pathAfter)).toThrow();
+  });
 });
 
 describe.each(inFormats)('%s', (inFormat) => {

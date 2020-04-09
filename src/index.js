@@ -48,7 +48,6 @@ const genDiff = (data1, data2) => {
       state: states.changed,
     });
   };
-
   const properties = _.union(_.keys(data1), _.keys(data2));
   const diff = properties.map((property) => build(property, data1, data2));
   return diff;
