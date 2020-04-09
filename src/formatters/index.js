@@ -1,12 +1,11 @@
 import listFormater from './list';
 import jsonFormater from './json';
 import plainFormater from './plain';
-import { getName } from '../propertydiff';
 
 const sortDiff = (diff) => diff.sort(
-  (propDiffA, propDiffB) => {
-    const propertyA = getName(propDiffA);
-    const propertyB = getName(propDiffB);
+  (propertyDiffA, propertyDiffB) => {
+    const propertyA = propertyDiffA().property;
+    const propertyB = propertyDiffB().property;
     if (propertyA < propertyB) {
       return -1;
     }

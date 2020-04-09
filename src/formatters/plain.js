@@ -1,12 +1,4 @@
-import {
-  getName,
-  getValue,
-  isAdded,
-  isChanged,
-  isDeleted,
-  hasSubproperties,
-  getSubproperties,
-} from '../propertydiff';
+import getStates from '../state';
 
 const stringifyValue = (value) => {
   switch (typeof value) {
@@ -20,24 +12,29 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortDiff) => {
+  const states = getStates();
   const formatDiff = (diffItems, parentProperty = '') => {
     const sorted = sortDiff(diffItems);
     const lines = sorted.reduce(
-      (acc, propDiff) => {
-        const property = getName(propDiff);
-        const value = getValue(propDiff);
-        const propertyName = (parentProperty === '' ? property : `${parentProperty}.${property}`);
+      (acc, propertyDiff) => {
+        const {
+          property,
+          value,
+          children,
+          state,
+        } = propertyDiff();
+        const propertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-        if (isAdded(propDiff)) {
+        if (state === states.added) {
           return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
         }
-        if (isDeleted(propDiff)) {
+        if (state === states.deleted) {
           return [...acc, lineTemplate('deleted')];
         }
-        if (hasSubproperties(propDiff)) {
-          return [...acc, ...formatDiff(getSubproperties(propDiff), propertyName)];
+        if (children) {
+          return [...acc, ...formatDiff(children, propertyName)];
         }
-        if (isChanged(propDiff)) {
+        if (state === states.changed) {
           return [...acc, lineTemplate(
             `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
           )];

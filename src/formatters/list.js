@@ -1,13 +1,4 @@
-import {
-  getName,
-  getValue,
-  isAdded,
-  isChanged,
-  isDeleted,
-  hasSubproperties,
-  getSubproperties,
-} from '../propertydiff';
-
+import getStates from '../state';
 
 const tabLength = 4;
 
@@ -28,29 +19,34 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortDiff) => {
+  const states = getStates();
   const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
     const sorted = sortDiff(diffItems);
     const lines = sorted.reduce(
-      (acc, propDiff) => {
-        const property = getName(propDiff);
-        const value = getValue(propDiff);
+      (acc, propertyDiff) => {
+        const {
+          property,
+          value,
+          children,
+          state,
+        } = propertyDiff();
         const linesTemplate = (stateSign, contentLines, marge) => ([
           `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
           ...contentLines
             .filter((line, index) => index !== 0)
             .map((line) => `${' '.repeat(marge)}${line}`),
         ]);
-        if (isAdded(propDiff)) {
+        if (state === states.added) {
           return [...acc, ...linesTemplate('+', stringifyValue(value).split('\n'), margeWidth)];
         }
-        if (isDeleted(propDiff)) {
+        if (state === states.deleted) {
           return [...acc, ...linesTemplate('-', stringifyValue(value).split('\n'), margeWidth)];
         }
-        if (hasSubproperties(propDiff)) {
-          return [...acc, ...linesTemplate(' ', formatDiff(getSubproperties(propDiff), depth + 1), 0)];
+        if (children) {
+          return [...acc, ...linesTemplate(' ', formatDiff(children, depth + 1), 0)];
         }
-        if (isChanged(propDiff)) {
+        if (state === states.changed) {
           return [
             ...acc,
             ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), margeWidth),
