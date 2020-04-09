@@ -53,15 +53,15 @@ const genDiff = (data1, data2) => {
   return diff;
 };
 
-export default (beforePathFile, afterPathFile, format) => {
-  const getData = (pathFile) => {
-    const fileContent = fs.readFileSync(pathFile, 'utf-8');
-    const parse = getParser(path.extname(pathFile).substring(1));
+export default (filePath1, filePath2, format) => {
+  const getData = (filePath) => {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const parse = getParser(path.extname(filePath).substring(1));
     const data = parse(fileContent);
     return data;
   };
-  const data1 = getData(beforePathFile);
-  const data2 = getData(afterPathFile);
+  const data1 = getData(filePath1);
+  const data2 = getData(filePath2);
   const diff = genDiff(data1, data2);
   const formatted = render(diff, format);
   return formatted;
