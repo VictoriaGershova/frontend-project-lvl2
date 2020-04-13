@@ -63,6 +63,6 @@ export default (filePath1, filePath2, format) => {
   const data1 = getData(filePath1);
   const data2 = getData(filePath2);
   const diff = genDiff(data1, data2);
-  const formatted = render(diff, format);
-  return formatted;
+  const formattedDiff = render(diff, format);
+  return formattedDiff;
 };

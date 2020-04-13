@@ -18,31 +18,31 @@ const getFixturePath = (fileName) => path.join(__dirname, '..', '__fixtures__', 
 
 describe('exceptions', () => {
   test('invalid JSON file', () => {
-    const correctFile = getFixturePath('after.json');
-    const notValidFile = getFixturePath('invalid.json');
-    expect(() => gendiff(notValidFile, correctFile, 'list')).toThrow();
+    const correctFilePath = getFixturePath('after.json');
+    const notValidFilePath = getFixturePath('invalid.json');
+    expect(() => gendiff(notValidFilePath, correctFilePath, 'list')).toThrow();
   });
   test('empty arguments', () => {
     expect(() => gendiff()).toThrow();
   });
   test('invalid file name', () => {
-    const correctFile = getFixturePath('after.json');
-    expect(() => gendiff('../nonexistent.json', correctFile, 'list')).toThrow();
-    expect(() => gendiff('../src', correctFile, 'list')).toThrow();
+    const correctFilePath = getFixturePath('after.json');
+    expect(() => gendiff('../nonexistent.json', correctFilePath, 'list')).toThrow();
+    expect(() => gendiff('../src', correctFilePath, 'list')).toThrow();
   });
   test('invalid output format name', () => {
-    const pathBefore = getFixturePath('before.json');
-    const pathAfter = getFixturePath('after.json');
-    expect(() => gendiff(pathBefore, pathAfter, '')).toThrow();
-    expect(() => gendiff(pathBefore, pathAfter)).toThrow();
+    const beforeFilePath = getFixturePath('before.json');
+    const afterFilePath = getFixturePath('after.json');
+    expect(() => gendiff(beforeFilePath, afterFilePath, '')).toThrow();
+    expect(() => gendiff(beforeFilePath, afterFilePath)).toThrow();
   });
 });
 
 describe.each(inFormats)('%s', (inFormat) => {
   test.each(Object.keys(outFormats))('%s', async (outFormat) => {
-    const pathBefore = getFixturePath(`before.${inFormat}`);
-    const pathAfter = getFixturePath(`after.${inFormat}`);
-    const actual = await gendiff(pathBefore, pathAfter, outFormat);
+    const beforeFilePath = getFixturePath(`before.${inFormat}`);
+    const afterFilePath = getFixturePath(`after.${inFormat}`);
+    const actual = await gendiff(beforeFilePath, afterFilePath, outFormat);
     const expected = await fs.readFileSync(getFixturePath(outFormats[outFormat]), 'utf-8').trim();
     expect(actual).toEqual(expected);
   });
