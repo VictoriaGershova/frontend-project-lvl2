@@ -1,4 +1,4 @@
-import getStates from '../state';
+import states from '../state';
 
 const tabLength = 4;
 
@@ -19,7 +19,6 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortDiff) => {
-  const states = getStates();
   const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
     const sorted = sortDiff(diffItems);

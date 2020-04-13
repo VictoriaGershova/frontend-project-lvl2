@@ -1,4 +1,4 @@
-import getStates from '../state';
+import states from '../state';
 
 const stringifyValue = (value) => {
   switch (typeof value) {
@@ -12,7 +12,6 @@ const stringifyValue = (value) => {
 };
 
 export default (diff, sortDiff) => {
-  const states = getStates();
   const formatDiff = (diffItems, parentProperty = '') => {
     const sorted = sortDiff(diffItems);
     const lines = sorted.reduce(

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import path from 'path';
 import getParser from './parser';
 import render from './formatters';
-import getStates from './state';
+import states from './state';
 
 /*
   diff as an array of functions
@@ -12,7 +12,6 @@ const genDiff = (data1, data2) => {
   const build = (property, oldData, newData) => {
     const oldValue = oldData[property];
     const newValue = newData[property];
-    const states = getStates();
     if (typeof oldValue === 'undefined') {
       return () => ({
         property,
