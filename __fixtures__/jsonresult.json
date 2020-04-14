@@ -1,139 +1,157 @@
 {
-  "common": {
-    "state": "changed",
-    "value": {
-      "oldValue": {
-        "setting1": "Value 1",
-        "setting2": 200,
-        "setting3": true,
-        "setting6": {
-          "key": "value"
-        }
-      },
-      "newValue": {
-        "follow": false,
-        "setting1": "Value 1",
-        "setting4": "blah blah",
-        "setting3": {
-          "key": "value"
-        },
-        "setting5": {
-          "key5": "value5"
-        },
-        "setting6": {
-          "key": "value",
-          "ops": "vops"
-        }
-      }
-    },
-    "hasInnerChanges": true,
-    "children": {
-      "follow": {
-        "state": "added",
-        "value": false
-      },
-      "setting1": {
-        "state": "unchanged",
-        "value": "Value 1"
-      },
-      "setting2": {
-        "state": "deleted",
-        "value": 200
-      },
-      "setting3": {
-        "state": "changed",
-        "value": {
-          "oldValue": true,
-          "newValue": {
+  "properties": [
+    {
+      "property": "common",
+      "state": "changed",
+      "value": {
+        "oldValue": {
+          "setting1": "Value 1",
+          "setting2": 200,
+          "setting3": true,
+          "setting6": {
             "key": "value"
           }
-        }
-      },
-      "setting4": {
-        "state": "added",
-        "value": "blah blah"
-      },
-      "setting5": {
-        "state": "added",
-        "value": {
-          "key5": "value5"
-        }
-      },
-      "setting6": {
-        "state": "changed",
-        "value": {
-          "oldValue": {
+        },
+        "newValue": {
+          "follow": false,
+          "setting1": "Value 1",
+          "setting4": "blah blah",
+          "setting3": {
             "key": "value"
           },
-          "newValue": {
+          "setting5": {
+            "key5": "value5"
+          },
+          "setting6": {
             "key": "value",
             "ops": "vops"
           }
+        }
+      },
+      "hasInnerChanges": true,
+      "children": [
+        {
+          "property": "follow",
+          "state": "added",
+          "value": false
         },
-        "hasInnerChanges": true,
-        "children": {
-          "key": {
-            "state": "unchanged",
-            "value": "value"
+        {
+          "property": "setting1",
+          "state": "unchanged",
+          "value": "Value 1"
+        },
+        {
+          "property": "setting2",
+          "state": "deleted",
+          "value": 200
+        },
+        {
+          "property": "setting3",
+          "state": "changed",
+          "value": {
+            "oldValue": true,
+            "newValue": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "property": "setting4",
+          "state": "added",
+          "value": "blah blah"
+        },
+        {
+          "property": "setting5",
+          "state": "added",
+          "value": {
+            "key5": "value5"
+          }
+        },
+        {
+          "property": "setting6",
+          "state": "changed",
+          "value": {
+            "oldValue": {
+              "key": "value"
+            },
+            "newValue": {
+              "key": "value",
+              "ops": "vops"
+            }
           },
-          "ops": {
-            "state": "added",
-            "value": "vops"
+          "hasInnerChanges": true,
+          "children": [
+            {
+              "property": "key",
+              "state": "unchanged",
+              "value": "value"
+            },
+            {
+              "property": "ops",
+              "state": "added",
+              "value": "vops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "property": "group1",
+      "state": "changed",
+      "value": {
+        "oldValue": {
+          "baz": "bas",
+          "foo": "bar",
+          "nest": {
+            "key": "value"
+          }
+        },
+        "newValue": {
+          "foo": "bar",
+          "baz": "bars",
+          "nest": "str"
+        }
+      },
+      "hasInnerChanges": true,
+      "children": [
+        {
+          "property": "baz",
+          "state": "changed",
+          "value": {
+            "oldValue": "bas",
+            "newValue": "bars"
+          }
+        },
+        {
+          "property": "foo",
+          "state": "unchanged",
+          "value": "bar"
+        },
+        {
+          "property": "nest",
+          "state": "changed",
+          "value": {
+            "oldValue": {
+              "key": "value"
+            },
+            "newValue": "str"
           }
         }
-      }
-    }
-  },
-  "group1": {
-    "state": "changed",
-    "value": {
-      "oldValue": {
-        "baz": "bas",
-        "foo": "bar",
-        "nest": {
-          "key": "value"
-        }
-      },
-      "newValue": {
-        "foo": "bar",
-        "baz": "bars",
-        "nest": "str"
+      ]
+    },
+    {
+      "property": "group2",
+      "state": "deleted",
+      "value": {
+        "abc": 12345
       }
     },
-    "hasInnerChanges": true,
-    "children": {
-      "baz": {
-        "state": "changed",
-        "value": {
-          "oldValue": "bas",
-          "newValue": "bars"
-        }
-      },
-      "foo": {
-        "state": "unchanged",
-        "value": "bar"
-      },
-      "nest": {
-        "state": "changed",
-        "value": {
-          "oldValue": {
-            "key": "value"
-          },
-          "newValue": "str"
-        }
+    {
+      "property": "group3",
+      "state": "added",
+      "value": {
+        "fee": 100500
       }
     }
-  },
-  "group2": {
-    "state": "deleted",
-    "value": {
-      "abc": 12345
-    }
-  },
-  "group3": {
-    "state": "added",
-    "value": {
-      "fee": 100500
-    }
-  }
+  ]
 }
