@@ -19,26 +19,27 @@ export default (diff, sortDiff) => {
         const {
           property,
           value,
+          hasInnerChange,
           children,
           state,
         } = propertyDiff();
         const propertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-        if (state === states.added) {
-          return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
+        switch (state) {
+          case states.added:
+            return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
+          case states.deleted:
+            return [...acc, lineTemplate('deleted')];
+          case states.changed:
+            if (hasInnerChange) {
+              return [...acc, ...formatDiff(children, propertyName)];
+            }
+            return [...acc, lineTemplate(
+              `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
+            )];
+          default:
+            return acc;
         }
-        if (state === states.deleted) {
-          return [...acc, lineTemplate('deleted')];
-        }
-        if (children) {
-          return [...acc, ...formatDiff(children, propertyName)];
-        }
-        if (state === states.changed) {
-          return [...acc, lineTemplate(
-            `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-          )];
-        }
-        return acc;
       },
       [],
     );

@@ -6,10 +6,11 @@ export default (diff, sortDiff) => {
         const {
           property,
           value,
+          hasInnerChange,
           children,
           state,
         } = propertyDiff();
-        if (children) {
+        if (hasInnerChange) {
           return { ...acc, [property]: formatDiff(children) };
         }
         return { ...acc, [property]: { state, value } };

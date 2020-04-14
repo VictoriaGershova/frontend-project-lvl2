@@ -12,14 +12,14 @@ const genDiff = (data1, data2) => {
   const build = (property, oldData, newData) => {
     const oldValue = oldData[property];
     const newValue = newData[property];
-    if (typeof oldValue === 'undefined') {
+    if (!_.has(oldData, property)) {
       return () => ({
         property,
         value: newValue,
         state: states.added,
       });
     }
-    if (typeof newValue === 'undefined') {
+    if (!_.has(newData, property)) {
       return () => ({
         property,
         value: oldValue,
@@ -33,17 +33,12 @@ const genDiff = (data1, data2) => {
         state: states.unchanged,
       });
     }
-    if (oldValue instanceof Object && newValue instanceof Object) {
-      return () => ({
-        property,
-        value: { oldValue, newValue },
-        children: genDiff(oldValue, newValue),
-        state: states.changed,
-      });
-    }
+    const hasInnerChange = (oldValue instanceof Object && newValue instanceof Object);
     return () => ({
       property,
       value: { oldValue, newValue },
+      hasInnerChange,
+      children: (hasInnerChange ? genDiff(oldValue, newValue) : []),
       state: states.changed,
     });
   };

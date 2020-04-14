@@ -1,3 +1,4 @@
+import { flatten } from 'lodash';
 import states from '../state';
 
 const tabLength = 4;
@@ -22,41 +23,38 @@ export default (diff, sortDiff) => {
   const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
     const sorted = sortDiff(diffItems);
-    const lines = sorted.reduce(
-      (acc, propertyDiff) => {
-        const {
-          property,
-          value,
-          children,
-          state,
-        } = propertyDiff();
-        const linesTemplate = (stateSign, contentLines, marge) => ([
-          `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
-          ...contentLines
-            .filter((line, index) => index !== 0)
-            .map((line) => `${' '.repeat(marge)}${line}`),
-        ]);
-        if (state === states.added) {
-          return [...acc, ...linesTemplate('+', stringifyValue(value).split('\n'), margeWidth)];
-        }
-        if (state === states.deleted) {
-          return [...acc, ...linesTemplate('-', stringifyValue(value).split('\n'), margeWidth)];
-        }
-        if (children) {
-          return [...acc, ...linesTemplate(' ', formatDiff(children, depth + 1), 0)];
-        }
-        if (state === states.changed) {
+    const lines = sorted.map((propertyDiff) => {
+      const {
+        property,
+        value,
+        hasInnerChange,
+        children,
+        state,
+      } = propertyDiff();
+      const linesTemplate = (stateSign, contentLines, marge) => ([
+        `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
+        ...contentLines
+          .filter((line, index) => index !== 0)
+          .map((line) => `${' '.repeat(marge)}${line}`),
+      ]);
+      switch (state) {
+        case states.added:
+          return linesTemplate('+', stringifyValue(value).split('\n'), margeWidth);
+        case states.deleted:
+          return linesTemplate('-', stringifyValue(value).split('\n'), margeWidth);
+        case states.changed:
+          if (hasInnerChange) {
+            return linesTemplate(' ', formatDiff(children, depth + 1), 0);
+          }
           return [
-            ...acc,
             ...linesTemplate('-', stringifyValue(value.oldValue).split('\n'), margeWidth),
             ...linesTemplate('+', stringifyValue(value.newValue).split('\n'), margeWidth),
           ];
-        }
-        return [...acc, ...linesTemplate(' ', stringifyValue(value).split('\n'), margeWidth)];
-      },
-      [],
-    );
-    return ['{', ...lines, `${' '.repeat(tabLength * depth)}}`];
+        default:
+          return linesTemplate(' ', stringifyValue(value).split('\n'), margeWidth);
+      }
+    });
+    return ['{', ...flatten(lines), `${' '.repeat(tabLength * depth)}}`];
   };
   const lines = formatDiff(diff);
   return lines.join('\n');
