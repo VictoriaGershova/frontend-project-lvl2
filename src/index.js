@@ -15,31 +15,31 @@ const genDiff = (data1, data2) => {
     if (!_.has(oldData, property)) {
       return () => ({
         property,
-        value: newValue,
         state: states.added,
+        value: newValue,
       });
     }
     if (!_.has(newData, property)) {
       return () => ({
         property,
-        value: oldValue,
         state: states.deleted,
+        value: oldValue,
       });
     }
     if (_.isEqual(oldValue, newValue)) {
       return () => ({
         property,
-        value: oldValue,
         state: states.unchanged,
+        value: oldValue,
       });
     }
-    const hasInnerChange = (oldValue instanceof Object && newValue instanceof Object);
+    const hasInnerChanges = (oldValue instanceof Object && newValue instanceof Object);
     return () => ({
       property,
-      value: { oldValue, newValue },
-      hasInnerChange,
-      children: (hasInnerChange ? genDiff(oldValue, newValue) : []),
       state: states.changed,
+      value: { oldValue, newValue },
+      hasInnerChanges,
+      children: (hasInnerChanges ? genDiff(oldValue, newValue) : []),
     });
   };
   const properties = _.union(_.keys(data1), _.keys(data2));

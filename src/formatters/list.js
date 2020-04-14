@@ -26,10 +26,10 @@ export default (diff) => {
     const lines = diffItems.map((propertyDiff) => {
       const {
         property,
-        value,
-        hasInnerChange,
-        children,
         state,
+        value,
+        hasInnerChanges,
+        children,
       } = propertyDiff();
       const linesTemplate = (stateSign, contentLines, marge) => ([
         `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
@@ -43,7 +43,7 @@ export default (diff) => {
         case states.deleted:
           return linesTemplate('-', stringifyValue(value).split('\n'), margeWidth);
         case states.changed:
-          if (hasInnerChange) {
+          if (hasInnerChanges) {
             return linesTemplate(' ', formatDiff(children, depth + 1), 0);
           }
           return [

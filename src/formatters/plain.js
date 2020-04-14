@@ -17,10 +17,10 @@ export default (diff) => {
       (acc, propertyDiff) => {
         const {
           property,
-          value,
-          hasInnerChange,
-          children,
           state,
+          value,
+          hasInnerChanges,
+          children,
         } = propertyDiff();
         const propertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
@@ -30,7 +30,7 @@ export default (diff) => {
           case states.deleted:
             return [...acc, lineTemplate('deleted')];
           case states.changed:
-            if (hasInnerChange) {
+            if (hasInnerChanges) {
               return [...acc, ...formatDiff(children, propertyName)];
             }
             return [...acc, lineTemplate(

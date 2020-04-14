@@ -4,15 +4,29 @@ export default (diff) => {
       (acc, propertyDiff) => {
         const {
           property,
-          value,
-          hasInnerChange,
-          children,
           state,
+          value,
+          hasInnerChanges,
+          children,
         } = propertyDiff();
-        if (hasInnerChange) {
-          return { ...acc, [property]: formatDiff(children) };
+        if (hasInnerChanges) {
+          return {
+            ...acc,
+            [property]: {
+              state,
+              value,
+              hasInnerChanges,
+              children: formatDiff(children),
+            },
+          };
         }
-        return { ...acc, [property]: { state, value } };
+        return {
+          ...acc,
+          [property]: {
+            state,
+            value,
+          },
+        };
       },
       {},
     );
