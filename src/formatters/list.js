@@ -32,29 +32,28 @@ export default (diff) => {
         hasInnerChanges,
         children,
       } = propertyDiff();
-      const linesTemplate = (stateSign, contentLines) => ([
-        `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${contentLines[0]}`,
-        ...contentLines.filter((line, index) => index !== 0),
-      ]);
+      const lineTemplate = (stateSign, content) => (
+        `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${content}`
+      );
       switch (state) {
         case states.added:
-          return linesTemplate('+', stringifyValue(value, depth + 1).split('\n'));
+          return lineTemplate('+', stringifyValue(value, depth + 1));
         case states.deleted:
-          return linesTemplate('-', stringifyValue(value, depth + 1).split('\n'));
+          return lineTemplate('-', stringifyValue(value, depth + 1));
         case states.changed:
           if (hasInnerChanges) {
-            return linesTemplate(' ', formatDiff(children, depth + 1));
+            return lineTemplate(' ', formatDiff(children, depth + 1));
           }
           return [
-            ...linesTemplate('-', stringifyValue(value.oldValue, depth + 1).split('\n')),
-            ...linesTemplate('+', stringifyValue(value.newValue, depth + 1).split('\n')),
+            lineTemplate('-', stringifyValue(value.oldValue, depth + 1)),
+            lineTemplate('+', stringifyValue(value.newValue, depth + 1)),
           ];
         default:
-          return linesTemplate(' ', stringifyValue(value, depth + 1).split('\n'));
+          return lineTemplate(' ', stringifyValue(value, depth + 1));
       }
     });
-    return ['{', ...flatten(lines), `${' '.repeat(tabLength * depth)}}`];
+    return ['{', ...flatten(lines), `${' '.repeat(tabLength * depth)}}`].join('\n');
   };
   const lines = formatDiff(diff);
-  return lines.join('\n');
+  return lines;
 };
