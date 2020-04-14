@@ -13,8 +13,8 @@ const stringifyValue = (value) => {
 
 export default (diff) => {
   const formatDiff = (diffItems, parentProperty = '') => {
-    const lines = diffItems.reduce(
-      (acc, propertyDiff) => {
+    const lines = diffItems.map(
+      (propertyDiff) => {
         const {
           property,
           state,
@@ -26,24 +26,26 @@ export default (diff) => {
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
         switch (state) {
           case states.added:
-            return [...acc, lineTemplate(`added with value: ${stringifyValue(value)}`)];
+            return lineTemplate(`added with value: ${stringifyValue(value)}`);
           case states.deleted:
-            return [...acc, lineTemplate('deleted')];
+            return lineTemplate('deleted');
           case states.changed:
             if (hasInnerChanges) {
-              return [...acc, ...formatDiff(children, propertyName)];
+              return formatDiff(children, propertyName);
             }
-            return [...acc, lineTemplate(
+            return lineTemplate(
               `changed from ${stringifyValue(value.oldValue)} to ${stringifyValue(value.newValue)}`,
-            )];
+            );
           default:
-            return acc;
+            return '';
         }
       },
       [],
     );
-    return lines;
+    return lines
+      .filter((line) => line !== '')
+      .join('\n');
   };
   const lines = formatDiff(diff);
-  return lines.join('\n');
+  return lines;
 };
