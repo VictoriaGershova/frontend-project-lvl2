@@ -11,10 +11,9 @@ const stringifyValue = (value) => {
   }
 };
 
-export default (diff, sortDiff) => {
+export default (diff) => {
   const formatDiff = (diffItems, parentProperty = '') => {
-    const sorted = sortDiff(diffItems);
-    const lines = sorted.reduce(
+    const lines = diffItems.reduce(
       (acc, propertyDiff) => {
         const {
           property,

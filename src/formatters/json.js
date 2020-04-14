@@ -1,7 +1,6 @@
-export default (diff, sortDiff) => {
+export default (diff) => {
   const formatDiff = (diffItems) => {
-    const sorted = sortDiff(diffItems);
-    const lines = sorted.reduce(
+    const lines = diffItems.reduce(
       (acc, propertyDiff) => {
         const {
           property,

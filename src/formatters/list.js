@@ -20,11 +20,10 @@ const stringifyValue = (value) => {
   return `${value}`;
 };
 
-export default (diff, sortDiff) => {
+export default (diff) => {
   const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
-    const sorted = sortDiff(diffItems);
-    const lines = sorted.map((propertyDiff) => {
+    const lines = diffItems.map((propertyDiff) => {
       const {
         property,
         value,
