@@ -43,16 +43,9 @@ const genDiff = (data1, data2) => {
     });
   };
   const properties = _.union(_.keys(data1), _.keys(data2));
-  const sortedProperties = properties.sort((propertyA, propertyB) => {
-    if (propertyA < propertyB) {
-      return -1;
-    }
-    if (propertyA > propertyB) {
-      return 1;
-    }
-    return 0;
-  });
-  const diff = sortedProperties.map((property) => build(property, data1, data2));
+  const diff = properties
+    .sort()
+    .map((property) => build(property, data1, data2));
   return diff;
 };
 
