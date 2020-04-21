@@ -4,6 +4,7 @@ import path from 'path';
 import getParser from './parser';
 import render from './formatters';
 import states from './state';
+import types from './type';
 
 /*
   diff as an array of objects
@@ -15,31 +16,40 @@ const genDiff = (data1, data2) => {
     if (!_.has(oldData, property)) {
       return {
         property,
+        type: types.leaf,
+        newValue,
         state: states.added,
-        value: newValue,
       };
     }
     if (!_.has(newData, property)) {
       return {
         property,
+        type: types.leaf,
+        oldValue,
         state: states.deleted,
-        value: oldValue,
       };
     }
-    if (_.isEqual(oldValue, newValue)) {
+    if (oldValue instanceof Object && newValue instanceof Object) {
       return {
         property,
-        state: states.unchanged,
-        value: oldValue,
+        type: types.tree,
+        children: genDiff(oldValue, newValue),
       };
     }
-    const hasInnerChanges = (oldValue instanceof Object && newValue instanceof Object);
+    if (oldValue === newValue) {
+      return {
+        property,
+        type: types.leaf,
+        oldValue,
+        state: states.unchanged,
+      };
+    }
     return {
       property,
+      type: types.leaf,
+      oldValue,
+      newValue,
       state: states.changed,
-      value: { oldValue, newValue },
-      hasInnerChanges,
-      children: (hasInnerChanges ? genDiff(oldValue, newValue) : []),
     };
   };
   const properties = _.union(_.keys(data1), _.keys(data2));
