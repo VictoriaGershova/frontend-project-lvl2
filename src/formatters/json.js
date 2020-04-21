@@ -7,7 +7,7 @@ export default (diff) => {
         value,
         hasInnerChanges,
         children,
-      } = propertyDiff();
+      } = propertyDiff;
       if (hasInnerChanges) {
         return {
           property,

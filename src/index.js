@@ -6,41 +6,41 @@ import render from './formatters';
 import states from './state';
 
 /*
-  diff as an array of functions
+  diff as an array of objects
 */
 const genDiff = (data1, data2) => {
   const build = (property, oldData, newData) => {
     const oldValue = oldData[property];
     const newValue = newData[property];
     if (!_.has(oldData, property)) {
-      return () => ({
+      return {
         property,
         state: states.added,
         value: newValue,
-      });
+      };
     }
     if (!_.has(newData, property)) {
-      return () => ({
+      return {
         property,
         state: states.deleted,
         value: oldValue,
-      });
+      };
     }
     if (_.isEqual(oldValue, newValue)) {
-      return () => ({
+      return {
         property,
         state: states.unchanged,
         value: oldValue,
-      });
+      };
     }
     const hasInnerChanges = (oldValue instanceof Object && newValue instanceof Object);
-    return () => ({
+    return {
       property,
       state: states.changed,
       value: { oldValue, newValue },
       hasInnerChanges,
       children: (hasInnerChanges ? genDiff(oldValue, newValue) : []),
-    });
+    };
   };
   const properties = _.union(_.keys(data1), _.keys(data2));
   const diff = properties

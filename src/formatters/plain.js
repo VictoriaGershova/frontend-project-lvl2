@@ -21,7 +21,7 @@ export default (diff) => {
           value,
           hasInnerChanges,
           children,
-        } = propertyDiff();
+        } = propertyDiff;
         const propertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
         const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
         switch (state) {

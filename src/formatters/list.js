@@ -31,7 +31,7 @@ export default (diff) => {
         value,
         hasInnerChanges,
         children,
-      } = propertyDiff();
+      } = propertyDiff;
       const lineTemplate = (stateSign, content) => (
         `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${content}`
       );
