@@ -2,29 +2,25 @@
   "properties": [
     {
       "property": "common",
-      "type": "tree",
+      "state": "inner changed",
       "children": [
         {
           "property": "follow",
-          "type": "leaf",
-          "newValue": false,
+          "value": false,
           "state": "added"
         },
         {
           "property": "setting1",
-          "type": "leaf",
-          "oldValue": "Value 1",
+          "value": "Value 1",
           "state": "unchanged"
         },
         {
           "property": "setting2",
-          "type": "leaf",
-          "oldValue": 200,
+          "value": 200,
           "state": "deleted"
         },
         {
           "property": "setting3",
-          "type": "leaf",
           "oldValue": true,
           "newValue": {
             "key": "value"
@@ -33,32 +29,28 @@
         },
         {
           "property": "setting4",
-          "type": "leaf",
-          "newValue": "blah blah",
+          "value": "blah blah",
           "state": "added"
         },
         {
           "property": "setting5",
-          "type": "leaf",
-          "newValue": {
+          "value": {
             "key5": "value5"
           },
           "state": "added"
         },
         {
           "property": "setting6",
-          "type": "tree",
+          "state": "inner changed",
           "children": [
             {
               "property": "key",
-              "type": "leaf",
-              "oldValue": "value",
+              "value": "value",
               "state": "unchanged"
             },
             {
               "property": "ops",
-              "type": "leaf",
-              "newValue": "vops",
+              "value": "vops",
               "state": "added"
             }
           ]
@@ -67,24 +59,21 @@
     },
     {
       "property": "group1",
-      "type": "tree",
+      "state": "inner changed",
       "children": [
         {
           "property": "baz",
-          "type": "leaf",
           "oldValue": "bas",
           "newValue": "bars",
           "state": "changed"
         },
         {
           "property": "foo",
-          "type": "leaf",
-          "oldValue": "bar",
+          "value": "bar",
           "state": "unchanged"
         },
         {
           "property": "nest",
-          "type": "leaf",
           "oldValue": {
             "key": "value"
           },
@@ -95,16 +84,14 @@
     },
     {
       "property": "group2",
-      "type": "leaf",
-      "oldValue": {
+      "value": {
         "abc": 12345
       },
       "state": "deleted"
     },
     {
       "property": "group3",
-      "type": "leaf",
-      "newValue": {
+      "value": {
         "fee": 100500
       },
       "state": "added"

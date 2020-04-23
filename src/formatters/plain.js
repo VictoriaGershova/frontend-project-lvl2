@@ -1,5 +1,4 @@
 import states from '../state';
-import types from '../type';
 
 const stringifyValue = (value) => {
   switch (typeof value) {
@@ -16,21 +15,25 @@ export default (diff) => {
   const formatDiff = (diffItems, parentProperty = '') => {
     const lines = diffItems.map(
       (propertyDiff) => {
-        const { property, oldValue, newValue } = propertyDiff;
-        const propertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
-        const lineTemplate = (action) => `Property '${propertyName}' was ${action}`;
-        if (propertyDiff.type === types.tree) {
-          return formatDiff(propertyDiff.children, propertyName);
-        }
+        const {
+          property,
+          value,
+          oldValue,
+          newValue,
+        } = propertyDiff;
+        const fullPropertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
+        const lineTemplate = (action) => `Property '${fullPropertyName}' was ${action}`;
         switch (propertyDiff.state) {
           case states.added:
-            return lineTemplate(`added with value: ${stringifyValue(newValue)}`);
+            return lineTemplate(`added with value: ${stringifyValue(value)}`);
           case states.deleted:
             return lineTemplate('deleted');
           case states.changed:
             return lineTemplate(
               `changed from ${stringifyValue(oldValue)} to ${stringifyValue(newValue)}`,
             );
+          case states.innerChanged:
+            return formatDiff(propertyDiff.children, fullPropertyName);
           default:
             return '';
         }

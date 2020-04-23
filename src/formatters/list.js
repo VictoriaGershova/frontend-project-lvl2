@@ -1,6 +1,5 @@
 import { flatten } from 'lodash';
 import states from '../state';
-import types from '../type';
 
 const tabLength = 4;
 
@@ -26,25 +25,29 @@ export default (diff) => {
   const formatDiff = (diffItems, depth = 0) => {
     const margeWidth = tabLength * (depth + 1); // space length before property including operation
     const lines = diffItems.map((propertyDiff) => {
-      const { property, oldValue, newValue } = propertyDiff;
+      const {
+        property,
+        value,
+        oldValue,
+        newValue,
+      } = propertyDiff;
       const lineTemplate = (stateSign, content) => (
         `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${content}`
       );
-      if (propertyDiff.type === types.tree) {
-        return lineTemplate(' ', formatDiff(propertyDiff.children, depth + 1));
-      }
       switch (propertyDiff.state) {
         case states.added:
-          return lineTemplate('+', stringifyValue(newValue, depth + 1));
+          return lineTemplate('+', stringifyValue(value, depth + 1));
         case states.deleted:
-          return lineTemplate('-', stringifyValue(oldValue, depth + 1));
+          return lineTemplate('-', stringifyValue(value, depth + 1));
         case states.changed:
           return [
             lineTemplate('-', stringifyValue(oldValue, depth + 1)),
             lineTemplate('+', stringifyValue(newValue, depth + 1)),
           ];
+        case states.innerChanged:
+          return lineTemplate(' ', formatDiff(propertyDiff.children, depth + 1));
         default:
-          return lineTemplate(' ', stringifyValue(oldValue, depth + 1));
+          return lineTemplate(' ', stringifyValue(value, depth + 1));
       }
     });
     return ['{', ...flatten(lines), `${' '.repeat(tabLength * depth)}}`].join('\n');
