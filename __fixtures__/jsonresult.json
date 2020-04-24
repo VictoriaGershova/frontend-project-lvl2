@@ -1,100 +1,98 @@
-{
-  "properties": [
-    {
-      "property": "common",
-      "state": "inner changed",
-      "children": [
-        {
-          "property": "follow",
-          "value": false,
-          "state": "added"
-        },
-        {
-          "property": "setting1",
-          "value": "Value 1",
-          "state": "unchanged"
-        },
-        {
-          "property": "setting2",
-          "value": 200,
-          "state": "deleted"
-        },
-        {
-          "property": "setting3",
-          "oldValue": true,
-          "newValue": {
-            "key": "value"
-          },
-          "state": "changed"
-        },
-        {
-          "property": "setting4",
-          "value": "blah blah",
-          "state": "added"
-        },
-        {
-          "property": "setting5",
-          "value": {
-            "key5": "value5"
-          },
-          "state": "added"
-        },
-        {
-          "property": "setting6",
-          "state": "inner changed",
-          "children": [
-            {
-              "property": "key",
-              "value": "value",
-              "state": "unchanged"
-            },
-            {
-              "property": "ops",
-              "value": "vops",
-              "state": "added"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "property": "group1",
-      "state": "inner changed",
-      "children": [
-        {
-          "property": "baz",
-          "oldValue": "bas",
-          "newValue": "bars",
-          "state": "changed"
-        },
-        {
-          "property": "foo",
-          "value": "bar",
-          "state": "unchanged"
-        },
-        {
-          "property": "nest",
-          "oldValue": {
-            "key": "value"
-          },
-          "newValue": "str",
-          "state": "changed"
-        }
-      ]
-    },
-    {
-      "property": "group2",
-      "value": {
-        "abc": 12345
+[
+  {
+    "property": "common",
+    "state": "inner changed",
+    "children": [
+      {
+        "property": "follow",
+        "value": false,
+        "state": "added"
       },
-      "state": "deleted"
-    },
-    {
-      "property": "group3",
-      "value": {
-        "fee": 100500
+      {
+        "property": "setting1",
+        "value": "Value 1",
+        "state": "unchanged"
       },
-      "state": "added"
-    }
-  ]
-}
+      {
+        "property": "setting2",
+        "value": 200,
+        "state": "deleted"
+      },
+      {
+        "property": "setting3",
+        "oldValue": true,
+        "newValue": {
+          "key": "value"
+        },
+        "state": "changed"
+      },
+      {
+        "property": "setting4",
+        "value": "blah blah",
+        "state": "added"
+      },
+      {
+        "property": "setting5",
+        "value": {
+          "key5": "value5"
+        },
+        "state": "added"
+      },
+      {
+        "property": "setting6",
+        "state": "inner changed",
+        "children": [
+          {
+            "property": "key",
+            "value": "value",
+            "state": "unchanged"
+          },
+          {
+            "property": "ops",
+            "value": "vops",
+            "state": "added"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "property": "group1",
+    "state": "inner changed",
+    "children": [
+      {
+        "property": "baz",
+        "oldValue": "bas",
+        "newValue": "bars",
+        "state": "changed"
+      },
+      {
+        "property": "foo",
+        "value": "bar",
+        "state": "unchanged"
+      },
+      {
+        "property": "nest",
+        "oldValue": {
+          "key": "value"
+        },
+        "newValue": "str",
+        "state": "changed"
+      }
+    ]
+  },
+  {
+    "property": "group2",
+    "value": {
+      "abc": 12345
+    },
+    "state": "deleted"
+  },
+  {
+    "property": "group3",
+    "value": {
+      "fee": 100500
+    },
+    "state": "added"
+  }
+]
