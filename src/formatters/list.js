@@ -40,8 +40,10 @@ export default (diff) => {
           ];
         case states.innerChanged:
           return lineTemplate(' ', formatDiff(propertyDiff.children, depth + 1));
-        default:
+        case states.unchanged:
           return lineTemplate(' ', stringifyValue(value, depth + 1));
+        default:
+          throw new Error(`Unknown property state: '${propertyDiff.state}'!`);
       }
     });
     return ['{', ...flatten(lines), `${' '.repeat(tabLength * depth)}}`].join('\n');

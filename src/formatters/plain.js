@@ -32,10 +32,12 @@ export default (diff) => {
             return lineTemplate(
               `changed from ${stringifyValue(oldValue)} to ${stringifyValue(newValue)}`,
             );
+          case states.unchanged:
+            return '';
           case states.innerChanged:
             return formatDiff(propertyDiff.children, fullPropertyName);
           default:
-            return '';
+            throw new Error(`Unknown property state: '${propertyDiff.state}'!`);
         }
       },
       [],
