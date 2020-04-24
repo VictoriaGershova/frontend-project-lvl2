@@ -3,22 +3,16 @@ import states from '../state';
 
 const tabLength = 4;
 
-const stringifyObject = (obj, depth) => {
-  const marge = tabLength * (depth + 1);
-  const lines = Object.keys(obj)
-    .map((key) => {
-      const v = obj[key];
-      const strV = v instanceof Object ? stringifyObject(v, depth + 1) : v;
-      return `${' '.repeat(marge)}${key}: ${strV}`;
-    });
-  return ['{', ...lines, `${' '.repeat(depth * tabLength)}}`].join('\n');
-};
-
 const stringifyValue = (value, depth) => {
-  if (value instanceof Object) {
-    return stringifyObject(value, depth);
+  if (!(value instanceof Object)) {
+    return `${value}`;
   }
-  return `${value}`;
+  const lines = Object.keys(value).map(
+    (key) => (
+      `${' '.repeat(tabLength * (depth + 1))}${key}: ${stringifyValue(value[key], depth + 1)}`
+    ),
+  );
+  return ['{', ...lines, `${' '.repeat(depth * tabLength)}}`].join('\n');
 };
 
 export default (diff) => {
