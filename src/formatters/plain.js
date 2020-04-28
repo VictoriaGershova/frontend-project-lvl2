@@ -22,18 +22,17 @@ export default (diff) => {
           newValue,
         } = propertyDiff;
         const fullPropertyName = parentProperty === '' ? property : `${parentProperty}.${property}`;
-        const lineTemplate = (action) => `Property '${fullPropertyName}' was ${action}`;
         switch (propertyDiff.state) {
           case states.added:
-            return lineTemplate(`added with value: ${stringifyValue(value)}`);
+            return `Property '${fullPropertyName}' was added with value: ${stringifyValue(value)}`;
           case states.deleted:
-            return lineTemplate('deleted');
+            return `Property '${fullPropertyName}' was deleted`;
           case states.changed:
-            return lineTemplate(
-              `changed from ${stringifyValue(oldValue)} to ${stringifyValue(newValue)}`,
+            return (
+              `Property '${fullPropertyName}' was changed from ${stringifyValue(oldValue)} to ${stringifyValue(newValue)}`
             );
           case states.unchanged:
-            return '';
+            return null;
           case states.innerChanged:
             return formatDiff(propertyDiff.children, fullPropertyName);
           default:
@@ -43,7 +42,7 @@ export default (diff) => {
       [],
     );
     return lines
-      .filter((line) => line !== '')
+      .filter((line) => line !== null)
       .join('\n');
   };
   const lines = formatDiff(diff);

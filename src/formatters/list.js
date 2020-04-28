@@ -25,23 +25,20 @@ export default (diff) => {
         oldValue,
         newValue,
       } = propertyDiff;
-      const lineTemplate = (stateSign, content) => (
-        `${`${stateSign} `.padStart(margeWidth, ' ')}${property}: ${content}`
-      );
       switch (propertyDiff.state) {
         case states.added:
-          return lineTemplate('+', stringifyValue(value, depth + 1));
+          return `${'+ '.padStart(margeWidth, ' ')}${property}: ${stringifyValue(value, depth + 1)}`;
         case states.deleted:
-          return lineTemplate('-', stringifyValue(value, depth + 1));
+          return `${'- '.padStart(margeWidth, ' ')}${property}: ${stringifyValue(value, depth + 1)}`;
         case states.changed:
           return [
-            lineTemplate('-', stringifyValue(oldValue, depth + 1)),
-            lineTemplate('+', stringifyValue(newValue, depth + 1)),
+            `${'- '.padStart(margeWidth, ' ')}${property}: ${stringifyValue(oldValue, depth + 1)}`,
+            `${'+ '.padStart(margeWidth, ' ')}${property}: ${stringifyValue(newValue, depth + 1)}`,
           ];
         case states.innerChanged:
-          return lineTemplate(' ', formatDiff(propertyDiff.children, depth + 1));
+          return `${'  '.padStart(margeWidth, ' ')}${property}: ${formatDiff(propertyDiff.children, depth + 1)}`;
         case states.unchanged:
-          return lineTemplate(' ', stringifyValue(value, depth + 1));
+          return `${'  '.padStart(margeWidth, ' ')}${property}: ${stringifyValue(value, depth + 1)}`;
         default:
           throw new Error(`Unknown property state: '${propertyDiff.state}'!`);
       }
